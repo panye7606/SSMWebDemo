@@ -1,0 +1,40 @@
+@CHARSET "UTF-8";
+.pagination {
+	float: none;
+	min-height: 32px;
+}
+
+.pagination a {
+	text-decoration: none;
+	outline: none;
+}
+
+.pagination a,.pagination span {
+	margin: 0 6px;
+	padding: 0 4px;
+	min-width: 24px;
+	line-height: 32px;
+	font-size: 14px;
+	display: inline-block;
+	text-align: center;
+	color: #555;
+}
+
+.pagination a:HOVER {
+	color: #FE7517;
+}
+
+.pagination .current {
+	color: #fff;
+	background-color: #FE7517;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+	-ms-border-radius: 16px;
+	-o-border-radius: 16px;
+	border-radius: 16px;
+}
+
+.pagination .current.prev,.pagination .current.next {
+	color: #999;
+	background-color: transparent;
+}

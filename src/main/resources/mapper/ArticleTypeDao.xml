@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cc.ibooker.dao.ArticleTypeDao">
+	<!-- 缓存：回收策略为先进先出eviction="FIFO"， 
+		自动刷新时间5秒flushInterval="5000", 
+		最多缓存512个引用对象size="512"， 
+		只读readOnly="true"。
+		注意：分页查询不适用缓存 -->
+	<cache flushInterval="5000" readOnly="true" eviction="FIFO" size="512"/>
+	
+	<resultMap type="ArticleTypeEntity" id="ArticleTypeMap">
+		<id column="at_id" property="atId" jdbcType="BIGINT" />
+		<result column="at_name" property="atName" jdbcType="VARCHAR" />
+		<result column="at_name_desc" property="atNameDesc" jdbcType="VARCHAR" />
+		<result column="at_pinyin" property="atPinyin" jdbcType="VARCHAR" />
+		<result column="at_asid" property="atAsid" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="articleTypeColumn">
+		at_id, at_name, at_name_desc, at_pinyin, at_asid
+	</sql>
+
+</mapper>

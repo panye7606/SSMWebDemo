@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cc.ibooker.dao.ArticleAddrDao">
+	<!-- 缓存：回收策略为先进先出eviction="FIFO"， 
+		自动刷新时间5秒flushInterval="5000", 
+		最多缓存512个引用对象size="512"， 
+		只读readOnly="true"。
+		注意：分页查询不适用缓存 -->
+	<cache flushInterval="5000" readOnly="true" eviction="FIFO" size="512"/>
+	
+	<resultMap type="ArticleAddrEntity" id="ArticleAddrMap">
+		<id column="aa_id" property="aaId" jdbcType="BIGINT" />
+		<result column="aa_organization" property="aaOrganization" jdbcType="VARCHAR" />
+		<result column="aa_path" property="aaPath" jdbcType="VARCHAR" />
+		<result column="aa_aid" property="aaAid" jdbcType="BIGINT" />
+		<result column="aa_isdefault" property="aaIsdefault" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="articleAddrColumn">
+		aa_id, aa_organization, aa_path, aa_aid, aa_isdefault
+	</sql>
+	
+	<!-- 根据文章ID查询原文地址 -->
+	<select id="queryArticleAddrListByaaAid" parameterType="long" resultMap="ArticleAddrMap">
+		SELECT <include refid="articleAddrColumn"/> FROM t_article_addr 
+		WHERE aa_aid=#{aa_aid}
+	</select>
+
+</mapper>

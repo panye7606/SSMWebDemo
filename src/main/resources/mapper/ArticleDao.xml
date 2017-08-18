@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cc.ibooker.dao.ArticleDao">
+	<!-- 缓存：回收策略为先进先出eviction="FIFO"， 
+		自动刷新时间5秒flushInterval="5000", 
+		最多缓存512个引用对象size="512"， 
+		只读readOnly="true"。
+		注意：分页查询不适用缓存 -->
+	<cache flushInterval="5000" readOnly="true" eviction="FIFO" size="512"/>
+	
+	<resultMap type="ArticleEntity" id="ArticleMap">
+		<id column="a_id" property="aId" jdbcType="BIGINT" />
+		<result column="a_title" property="aTitle" jdbcType="VARCHAR" />
+		<result column="a_abstract" property="aAbstract" jdbcType="VARCHAR" />
+		<result column="a_pubtime" property="aPubtime" jdbcType="BIGINT" />
+		<result column="a_cover_path" property="aCoverPath" jdbcType="VARCHAR" />
+		<result column="a_uid" property="aUid" jdbcType="BIGINT" />
+		<result column="a_atid" property="aAtid" jdbcType="BIGINT" />
+		<result column="a_browsenum" property="aBrowsenum" jdbcType="INTEGER" />
+		<result column="a_isdelete" property="aIsdelete" jdbcType="VARCHAR" />
+		<result column="a_isallow" property="aIsallow" jdbcType="VARCHAR" />
+		<!-- 一对多-嵌套查询 -->
+		<collection property="articleAddrs" column="a_id" ofType="ArticleAddrEntity" select="cc.ibooker.dao.ArticleAddrDao.queryArticleAddrListByaaAid"/>
+	</resultMap>
+	
+	<resultMap type="ArticleData" id="ArticleDataMap">
+		<collection property="article" resultMap="ArticleMap"/>
+		<collection property="articleStyle" resultMap="cc.ibooker.dao.ArticleStyleDao.ArticleStyleMap"/>
+		<collection property="articleType" resultMap="cc.ibooker.dao.ArticleTypeDao.ArticleTypeMap"/>
+	</resultMap>
+	
+	<resultMap type="ArticleUserData" id="ArticleUserDataMap">
+		<collection property="article" resultMap="ArticleMap"/>
+		<collection property="articleStyle" resultMap="cc.ibooker.dao.ArticleStyleDao.ArticleStyleMap"/>
+		<collection property="articleType" resultMap="cc.ibooker.dao.ArticleTypeDao.ArticleTypeMap"/>
+		<collection property="user" resultMap="cc.ibooker.dao.UserDao.UserMap"/>
+	</resultMap>
+
+	<sql id="articleColumn">
+		a_id, a_title, a_abstract, a_pubtime, a_cover_path, a_uid, 
+		a_atid, a_browsenum, a_isdelete, a_isallow,
+		aa_id, aa_organization, aa_path, aa_aid, aa_isdefault
+	</sql>
+	
+	<sql id="articleDataColumn">
+		a_id, a_title, a_abstract, a_pubtime, a_cover_path, a_uid, 
+		a_atid, a_browsenum, a_isdelete, a_isallow,
+		as_id, as_name, as_pinyin,
+		at_id, at_name, at_name_desc, at_pinyin, at_asid
+	</sql>
+	
+	<sql id="articleUserDataColumn">
+		a_id, a_title, a_abstract, a_pubtime, a_cover_path, a_uid, 
+		a_atid, a_browsenum, a_isdelete, a_isallow,
+		as_id, as_name, as_pinyin,
+		at_id, at_name, at_name_desc, at_pinyin, at_asid,
+		u_id, u_phone, <!-- u_passwd, --> u_pic, u_regtime, u_realname,
+		u_sex, u_height, u_weight, u_birthday, u_domicile, u_pointx,
+		u_pointy, u_email, u_weixin, u_weibo, u_qq,
+		u_introduce, u_inviter_phone, u_realname_identify_state, 
+		u_isboard, u_tx_token, u_type, u_check_uid
+	</sql>
+	
+	<!-- 查询文章信息列表-总数 -->
+	<select id="queryArticleDataListCount" resultType="int">
+		SELECT IFNULL(COUNT(a_id), 0) FROM t_article a
+		JOIN t_article_type c ON a.a_atid = c.at_id
+		JOIN t_article_style b ON b.as_id = c.at_asid
+		LEFT JOIN t_article_addr d ON a.a_id = d.aa_aid
+		WHERE a.a_isdelete = #{a_isdelete}
+		AND a.a_isallow = #{a_isallow}
+	</select>
+	
+	<!-- 查询文章列表 -->
+	<select id="queryArticleDataList" resultMap="ArticleDataMap">
+		SELECT <include refid="articleDataColumn"/> FROM t_article a
+		JOIN t_article_type c ON a.a_atid = c.at_id
+		JOIN t_article_style b ON b.as_id = c.at_asid
+		WHERE a.a_isdelete = #{a_isdelete}
+		AND a.a_isallow = #{a_isallow}
+		ORDER BY a.a_id DESC
+		LIMIT #{limit_start}, #{limit_count}
+	</select>
+	
+	<!-- 根据文章ID查询文章详情 -->
+	<select id="queryArticleUserDataById" resultMap="ArticleUserDataMap">
+		SELECT <include refid="articleUserDataColumn"/> FROM t_article a
+		JOIN t_article_type c ON a.a_atid = c.at_id
+		JOIN t_article_style b ON b.as_id = c.at_asid
+		JOIN t_user d ON d.u_id = a.a_uid
+		WHERE a.a_id = #{a_id}
+	</select>
+
+</mapper>

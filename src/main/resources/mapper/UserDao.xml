@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cc.ibooker.dao.UserDao">
+	<!-- 缓存：回收策略为先进先出eviction="FIFO"， 
+		自动刷新时间5秒flushInterval="5000", 
+		最多缓存512个引用对象size="512"， 
+		只读readOnly="true"。
+		注意：分页查询不适用缓存 -->
+	<cache flushInterval="5000" readOnly="true" eviction="FIFO" size="512"/>
+	
+		<resultMap type="UserEntity" id="UserMap">
+		<id column="u_id" property="uId" jdbcType="BIGINT" />
+		<result column="u_phone" property="uPhone" jdbcType="BIGINT" />
+		<result column="u_passwd" property="uPasswd" jdbcType="VARCHAR" />
+		<result column="u_pic" property="uPic" jdbcType="VARCHAR" />
+		<result column="u_regtime" property="uRegtime" jdbcType="BIGINT" />
+		<result column="u_realname" property="uRealname" jdbcType="VARCHAR"/>
+		<result column="u_sex" property="uSex" jdbcType="VARCHAR" />
+		<result column="u_height" property="uHeight" jdbcType="INTEGER" />
+		<result column="u_weight" property="uWeight" jdbcType="INTEGER" />
+		<result column="u_birthday" property="uBirthday" jdbcType="VARCHAR" />
+		<result column="u_domicile" property="uDomicile" jdbcType="VARCHAR" />
+		<result column="u_pointx" property="uPointx" jdbcType="DOUBLE" />
+		<result column="u_pointy" property="uPointy" jdbcType="DOUBLE" />
+		<result column="u_email" property="uEmail" jdbcType="VARCHAR" />
+		<result column="u_weixin" property="uWeixin" jdbcType="VARCHAR" />
+		<result column="u_weibo" property="uWeibo" jdbcType="VARCHAR" />
+		<result column="u_qq" property="uQq" jdbcType="VARCHAR" />
+		<result column="u_introduce" property="uIntroduce" jdbcType="VARCHAR" />
+		<result column="u_inviter_phone" property="uInviterPhone" jdbcType="VARCHAR" />
+		<result column="u_realname_identify_state" property="uRealnameIdentifyState" jdbcType="VARCHAR" />
+		<result column="u_isboard" property="uIsboard" jdbcType="VARCHAR" />
+		<result column="u_tx_token" property="uTxToken" jdbcType="VARCHAR" />
+		<result column="u_type" property="uType" jdbcType="VARCHAR" />
+		<result column="u_check_uid" property="uCheckUid" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="userColumn">
+		u_id, u_phone, <!-- u_passwd, --> u_pic, u_regtime, u_realname,
+		u_sex, u_height, u_weight, u_birthday, u_domicile, u_pointx,
+		u_pointy, u_email, u_weixin, u_weibo, u_qq,
+		u_introduce, u_inviter_phone, u_realname_identify_state, 
+		u_isboard, u_tx_token, u_type, u_check_uid
+	</sql>
+	
+</mapper>
